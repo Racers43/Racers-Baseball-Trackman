@@ -1,0 +1,6 @@
+create extension if not exists pgcrypto;
+create table if not exists seasons(id uuid primary key default gen_random_uuid(), name text not null, created_at timestamptz default now());
+create table if not exists imports(id uuid primary key default gen_random_uuid(), season_id uuid references seasons(id) on delete cascade, file_name text not null, file_hash text, row_count integer not null default 0, imported_at timestamptz default now());
+create table if not exists pitches(id uuid primary key default gen_random_uuid(), season_id uuid references seasons(id) on delete cascade, import_id uuid references imports(id) on delete cascade, game_date date, pitcher text, batter text, pitch_call text, play_result text, plate_loc_side numeric, plate_loc_height numeric, rel_speed numeric, exit_speed numeric, launch_angle numeric, spin_rate numeric, spin_axis numeric, pitch_type text, raw jsonb not null default '{}'::jsonb);
+create index if not exists pitches_season_idx on pitches(season_id); create index if not exists pitches_pitcher_idx on pitches(season_id,pitcher); create index if not exists pitches_batter_idx on pitches(season_id,batter); create index if not exists pitches_date_idx on pitches(season_id,game_date);
+alter table seasons enable row level security; alter table imports enable row level security; alter table pitches enable row level security;

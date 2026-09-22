@@ -9,7 +9,7 @@ type ImportRecord={id:string;name:string;count:number;importedAt:string};
 export type Pitch={id:number;importId?:string;pitcher:string;batter:string;pitchCall:string;playResult:string;side:number|null;height:number|null;velo:number|null;exitVelo:number|null;angle:number|null;spin:number|null;spinAxis:number|null;pitchType:string;date:string};
 const STORAGE_KEY="racers-trackman-pitches-v1";
 const FILES_KEY="racers-trackman-imports-v1";
-function readImports():ImportRecord[]{try{const raw=JSON.parse(localStorage.getItem(FILES_KEY)||"[]");return raw.map((x:unknown)=>typeof x==="string"?{id:"legacy-"+x,name:x,count:0,importedAt:""}:x)}catch{return []}}
+function readImports():ImportRecord[]{try{const raw:unknown=JSON.parse(localStorage.getItem(FILES_KEY)||"[]");if(!Array.isArray(raw))return [];return raw.map((x:unknown):ImportRecord=>{if(typeof x==="string")return{id:"legacy-"+x,name:x,count:0,importedAt:""};if(x&&typeof x==="object"){const v=x as Partial<ImportRecord>;return{id:String(v.id??"legacy-unknown"),name:String(v.name??"Unknown import"),count:Number(v.count??0),importedAt:String(v.importedAt??"")}}return{id:"legacy-unknown",name:"Unknown import",count:0,importedAt:""}})}catch{return []}}
 const aliases={
  pitcher:["Pitcher","PitcherName"], batter:["Batter","BatterName","Hitter"],
  pitchCall:["PitchCall"], playResult:["PlayResult"], side:["PlateLocSide","PlateLocSide (ft)"],

@@ -1,6 +1,6 @@
 "use client";
 import {useEffect,useMemo,useState} from "react";
-import {BarChart3,Users,Target,Upload,Filter,Activity,Map,RefreshCw,Database} from "lucide-react";
+import {BarChart3,Users,Target,Upload,Filter,Activity,Map,RefreshCw,Database,Printer} from "lucide-react";
 
 type Pitch={id:number;pitcher:string;batter:string;pitchType:string;pitchCall:string;playResult:string;velo:number|null;exitVelo:number|null;angle:number|null;spin:number|null;spinAxis:number|null;side:number|null;height:number|null;date:string};
 const STORAGE_KEY="racers-trackman-pitches-v1";
@@ -23,7 +23,7 @@ export default function Dashboard(){
  const reload=()=>{try{setData(JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]"))}catch{}};
  const nav=["Overview","Hitters","Pitchers","Heat Maps","Imports"];
  return <main className="dash"><aside><div className="brand">RACERS<br/><span>TRACKMAN</span></div><nav>{nav.map(x=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{x}</button>)}</nav><div className="sideFoot">Murray State Baseball<br/>Analytics workspace</div></aside><section className="content">
- <header><div><div className="eyebrow">COACH DASHBOARD</div><h1>{tab}</h1><p>Season-long TrackMan performance and pitch-level analysis.</p></div><div className="headerActions"><button className="iconBtn" onClick={reload} title="Refresh imported data"><RefreshCw size={16}/></button><a className="uploadBtn" href="/import"><Upload size={17}/> Import Data</a></div></header>
+ <header><div><div className="eyebrow">COACH DASHBOARD</div><h1>{tab}</h1><p>Season-long TrackMan performance and pitch-level analysis.</p></div><div className="headerActions"><button className="iconBtn" onClick={reload} title="Refresh imported data"><RefreshCw size={16}/></button><button className="printBtn" onClick={()=>window.print()} title="Print or save this report as PDF"><Printer size={17}/> Print Report</button><a className="uploadBtn" href="/import"><Upload size={17}/> Import Data</a></div></header>
  <div className="filters"><label><Filter size={15}/> Player <select value={player} onChange={e=>setPlayer(e.target.value)}><option>All Players</option>{uniq([...hitters,...pitchers]).map(x=><option key={x}>{x}</option>)}</select></label><label>Pitch Type <select value={type} onChange={e=>setType(e.target.value)}><option>All Pitches</option>{pitchTypes.map(x=><option key={x}>{x}</option>)}</select></label><label>Date <select value={date} onChange={e=>setDate(e.target.value)}><option>All Dates</option>{dates.map(x=><option key={x}>{x}</option>)}</select></label></div>
  {tab==="Overview"&&<Overview data={filtered} hitters={hitters} pitchers={pitchers} avgV={overviewV} avgEV={overviewEV} hard={hard} bip={bip} setTab={setTab}/>}
  {tab==="Hitters"&&<HitterReport data={data} hitters={hitters} selected={player==="All Players"||!hitters.includes(player)?hitters[0]||"":player}/>}

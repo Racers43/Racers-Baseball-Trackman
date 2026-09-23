@@ -9,7 +9,7 @@ function avg(a:(number|null)[]){const x=a.filter((v):v is number=>v!==null);retu
 function avgExit(a:(number|null)[]){return avg(a.map(v=>v!==null&&v>0?v:null))}
 function max(a:(number|null)[]){const x=a.filter((v):v is number=>v!==null);return x.length?Math.max(...x):0}
 function uniq(a:string[]){return Array.from(new Set(a.filter(Boolean))).sort()}
-function isSwingingStrike(p:Pitch){return p.pitchCall.trim().toLowerCase()==="strike-swinging"}
+function isSwingingStrike(p:Pitch){const s=p.pitchCall.trim().toLowerCase().replace(/[\s_-]+/g,"");return s==="strikeswinging"}
 function isSwing(p:Pitch){const s=(p.pitchCall+" "+p.playResult).toLowerCase();return s.includes("swing")||s.includes("strikeout")||s.includes("foul")||s.includes("in play")||s.includes("inplay")||s.includes("hit")||s.includes("out")}
 function isBip(p:Pitch){return p.exitVelo!==null}
 function isHard(p:Pitch){return p.exitVelo!==null&&p.exitVelo>=95}
